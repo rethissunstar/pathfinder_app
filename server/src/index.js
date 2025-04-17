@@ -1,26 +1,24 @@
-// Import dependencies
-const express = require("express");
-const cors = require("cors");
-const dotenv = require("dotenv");
+const fs = require('fs');
+const path = require('path');
 
-// Load environment variables
-dotenv.config();
+function loadRoutes(app) {
+  const domainsPath = path.join(__dirname);
+  const folders = fs.readdirSync(domainsPath);
 
-const app = express();
+  folders.forEach((folder) => {
+    const routeFile = `${capitalize(folder)}.routes.js`;
+    const routePath = path.join(domainsPath, folder, routeFile);
 
-// Middleware
-app.use(cors()); // Enable CORS for frontend requests
-app.use(express.json()); // Allow JSON request bodies
+    if (fs.existsSync(routePath)) {
+      const routes = require(routePath);
+      app.use(`/api/${folder}`, routes);
+      console.log(`🔗 Mounted /api/${folder}`);
+    }
+  });
+}
 
-// Simple test route
-app.get("/", (req, res) => {
-    res.json({ message: "Server is running!" });
-});
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
-// Define a port from environment variables or use 5000
-const PORT = process.env.PORT || 5000;
-
-// Start the server
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
+module.exports = { loadRoutes };
