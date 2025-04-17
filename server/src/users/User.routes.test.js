@@ -20,7 +20,7 @@ describe('User Routes', () => {
   it('should route POST /api/users/register to userController.register', async () => {
     const response = await request(app)
       .post('/api/users/register')
-      .send({ userName: 'tester', password: 'pass123', email: 'tester@example.com' });
+      .send({ userName: "testUser", password: process.env.TESTUSER_PASSWORD, email: process.env.TESTUSER_EMAIL});
 
     expect(response.status).toBe(201);
     expect(response.body.message).toBe('Mock register called');
@@ -29,7 +29,7 @@ describe('User Routes', () => {
   it('should route POST /api/users/login to userController.login', async () => {
     const response = await request(app)
       .post('/api/users/login')
-      .send({ userName: 'tester', password: 'pass123' });
+      .send({ userName: process.env.TESTUSER_NAME, password: process.env.TESTUSER_PASSWORD });
 
     expect(response.status).toBe(200);
     expect(response.body.message).toBe('Mock login called');
