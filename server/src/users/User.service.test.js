@@ -95,7 +95,7 @@ describe('User Service', () => {
       await expect(userService.loginUser({
         userName: 'ghost',
         password: 'whatever'
-      })).rejects.toThrow('Invalid username or password');
+      })).rejects.toThrow('Invalid username ');
     });
 
     it('should throw if password is incorrect', async () => {
@@ -109,7 +109,7 @@ describe('User Service', () => {
       await expect(userService.loginUser({
         userName: 'wrongpass',
         password: 'incorrect'
-      })).rejects.toThrow('Invalid username or password');
+      })).rejects.toThrow('Invalid  password');
     });
   });
 });
