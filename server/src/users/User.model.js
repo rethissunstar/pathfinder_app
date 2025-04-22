@@ -111,6 +111,20 @@ const defineUserModel = (sequelize) => {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
       },
+      profilePic: {
+        type: DataTypes.STRING,
+        defaultValue: "",
+      },
+      guild: {
+        type: DataTypes.STRING,
+        defaultValue: "",
+
+      },
+      party: {
+        type: DataTypes.STRING,
+        defaultValue: "",
+      }
+
     },
     {
       sequelize,
