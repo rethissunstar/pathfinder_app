@@ -8,7 +8,7 @@ const Home = () => {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    fetch("http://localhost:5000")  
+    fetch("http://localhost:3001")  
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -24,7 +24,7 @@ const Home = () => {
         setMessage("Error fetching data.");
       });
   }, []);
-  
+
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100">
