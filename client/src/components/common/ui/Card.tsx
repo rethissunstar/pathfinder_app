@@ -22,7 +22,7 @@ export const Card: React.FC<CardProps> = ({
   };
 
   return (
-    <div className={cn("bg-white rounded-xl shadow-md", variantStyles[variant], className)}>
+    <div className={cn(" rounded-xl shadow-md", variantStyles[variant], className)}>
       {title && (
         <h2 className="text-xl font-semibold mb-4 text-center border-b pb-2">{title}</h2>
       )}

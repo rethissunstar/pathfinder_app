@@ -38,14 +38,30 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  try {
-    const token = await userService.loginUser(req.body);
-    res.status(200).json({ message: 'Login successful', token });
-  } catch (err) {
-    console.error('Login error:', err);
-    res.status(401).json({ error: err.message });
-  }
-};
+    try {
+      const { token, user } = await userService.loginUser(req.body); 
+      res.status(200).json({
+        message: 'Login successful',
+        token,
+        user: {
+          userId: user.userId,
+          userName: user.userName,
+          email: user.email,
+          permission: user.permission,
+          profilePic: user.profilePic,
+          guild: user.guild,
+          party: user.party,
+          status: user.status,
+          theme: user.theme,
+          language: user.language,
+        },
+      });
+    } catch (err) {
+      console.error("Login error:", err);
+      res.status(401).json({ error: err.message });
+    }
+  };
+  
 
 // ✅ This allows tests to inject a mock service
 const injectUserService = (service) => {
