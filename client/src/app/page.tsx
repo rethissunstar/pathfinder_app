@@ -34,7 +34,7 @@ const Home = () => {
  
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex flex-col justify-center items-center min-h-screen ">
      <div className='text-lg'>This is Home</div>
       <div className="App">
       <h1>{message}</h1>

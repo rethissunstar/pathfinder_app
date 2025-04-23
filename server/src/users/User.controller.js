@@ -1,29 +1,3 @@
-// const userService = require('./User.service');
-
-// const register = async (req, res) => {
-//   try {
-//     const newUser = await userService.registerUser(req.body);
-//     res.status(201).json({ message: 'User created successfully', user: newUser });
-//   } catch (err) {
-//     console.error('Registration error:', err);
-//     res.status(400).json({ error: err.message });
-//   }
-// };
-
-// const login = async (req, res) => {
-//   try {
-//     const token = await userService.loginUser(req.body);
-//     res.status(200).json({ message: 'Login successful', token });
-//   } catch (err) {
-//     console.error('Login error:', err);
-//     res.status(401).json({ error: err.message });
-//   }
-// };
-
-// module.exports = {
-//   register,
-//   login,
-// };
 
 let userService; // This will be initialized below or injected in tests
 
@@ -38,30 +12,56 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
+  try {
+    const { token, user } = await userService.loginUser(req.body); 
+    res.status(200).json({
+      message: 'Login successful',
+      token,
+      user: {
+        userId: user.userId,
+        userName: user.userName,
+        email: user.email,
+        permission: user.permission,
+        profilePic: user.profilePic,
+        guild: user.guild,
+        party: user.party,
+        status: user.status,
+        theme: user.theme,
+        language: user.language,
+      },
+    });
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(401).json({ error: err.message });
+  }
+};
+
+// const patchUser = async (req, res) => {
+//   const { id } = req.params;
+//   const { theme, language } = req.body;
+
+//   try {
+//     const updatedUser = await userService.updateUserPreferences(id, { theme, language });
+//     res.json({ message: "User updated", user: updatedUser });
+//   } catch (err) {
+//     console.error("Update error:", err);
+//     res.status(500).json({ error: err.message });
+//   }
+// };
+const patchUser = async (req, res) => {
+    const { id } = req.params;
+    const { theme, language, profilePic } = req.body;
+  
     try {
-      const { token, user } = await userService.loginUser(req.body); 
-      res.status(200).json({
-        message: 'Login successful',
-        token,
-        user: {
-          userId: user.userId,
-          userName: user.userName,
-          email: user.email,
-          permission: user.permission,
-          profilePic: user.profilePic,
-          guild: user.guild,
-          party: user.party,
-          status: user.status,
-          theme: user.theme,
-          language: user.language,
-        },
-      });
+      const updatedUser = await userService.updateUserPreferences(id, { theme, language, profilePic });
+      res.json({ message: "User updated", user: updatedUser });
     } catch (err) {
-      console.error("Login error:", err);
-      res.status(401).json({ error: err.message });
+      console.error("Update error:", err);
+      res.status(500).json({ error: err.message });
     }
   };
   
+
 
 // ✅ This allows tests to inject a mock service
 const injectUserService = (service) => {
@@ -81,5 +81,6 @@ if (process.env.NODE_ENV !== 'test') {
 module.exports = {
   register,
   login,
+  patchUser,
   injectUserService, // exported for test injection
 };
