@@ -8,4 +8,7 @@ router.post('/register', userController.register);
 // POST /api/users/login
 router.post('/login', userController.login);
 
+// PATCH /api/users/:id
+router.patch('/:id', userController.patchUser);
+
 module.exports = router;

@@ -14,6 +14,8 @@ import { Button } from "@/components/common/ui/Button";
 import { useAtom } from "jotai";
 import { userAtom } from "@/store/userAtom";
 import { X } from "lucide-react";
+import { updateUser } from "@/lib/api/updateUser";
+
 
 interface SettingsSheetProps {
   open: boolean;
@@ -24,11 +26,27 @@ interface SettingsSheetProps {
 const SettingsSheet: React.FC<SettingsSheetProps> = ({ open, onClose, isMobile = false }) => {
   const [user, setUser] = useAtom(userAtom);
 
-  const handleThemeToggle = (checked: boolean) => {
-    const updatedUser = user ? { ...user, theme: checked ? "dark" as const : "light" as const } : null;
-    if (updatedUser) setUser(updatedUser);
-  };
+
+  const handleThemeToggle = async (checked: boolean) => {
+    if (!user) return;
   
+    const newTheme: "dark" | "light" = checked ? "dark" : "light";
+  
+    // 🧠 Optimistically update UI and DOM
+    const updatedUser = { ...user, theme: newTheme };
+    setUser(updatedUser);
+    document.documentElement.classList.toggle("dark", newTheme === "dark");
+  
+    try {
+      const response = await updateUser(user.userId, { theme: newTheme });
+      console.log("✅ Theme update response:", response);
+    } catch (error) {
+      console.error("❌ Failed to update theme:", error);
+      // Optionally revert if needed
+      // setUser(user);
+      // document.documentElement.classList.toggle("dark", newTheme !== "dark");
+    }
+  };
 
   return (
     <Sheet open={open} onOpenChange={onClose}>
@@ -43,17 +61,20 @@ const SettingsSheet: React.FC<SettingsSheetProps> = ({ open, onClose, isMobile =
             </div>
             <button
               onClick={() => onClose(false)}
-              className="text-white hover:text-gray-200 transition"
+              className="text-white hover:text-gray-200 transition text-2xl"
+              aria-label="Close Settings"
             >
-              <X className="w-6 h-6" />
+              <X className="w-7 h-7" />
             </button>
           </div>
         </SheetHeader>
 
-        <div className="mt-4 space-y-6">
+        <div className="mt-4 space-y-6 text-gray-900 dark:text-gray-100">
           {/* Theme Toggle */}
           <div className="flex items-center justify-between">
-            <Label htmlFor="theme-toggle">Dark Mode</Label>
+            <Label htmlFor="theme-toggle" className="text-gray-900 dark:text-gray-100">
+              Dark Mode
+            </Label>
             <Switch
               id="theme-toggle"
               checked={user?.theme === "dark"}
@@ -63,7 +84,7 @@ const SettingsSheet: React.FC<SettingsSheetProps> = ({ open, onClose, isMobile =
 
           {/* Language Setting Placeholder */}
           <div>
-            <h3 className="text-sm font-medium mb-2">Language</h3>
+            <h3 className="text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Language</h3>
             <Button
               variant="secondary"
               className="w-full"
@@ -82,3 +103,4 @@ const SettingsSheet: React.FC<SettingsSheetProps> = ({ open, onClose, isMobile =
 };
 
 export default SettingsSheet;
+

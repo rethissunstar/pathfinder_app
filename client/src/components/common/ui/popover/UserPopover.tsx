@@ -1,4 +1,5 @@
 
+
 // "use client";
 
 // import React from "react";
@@ -12,6 +13,7 @@
 //   party?: string;
 //   status?: string;
 //   onLogout: () => void;
+//   onSettingsClick?: () => void;
 //   isMobile?: boolean;
 // }
 
@@ -21,6 +23,7 @@
 //   party,
 //   status,
 //   onLogout,
+//   onSettingsClick,
 //   isMobile = false,
 // }) => {
 //   return (
@@ -43,8 +46,7 @@
 //         <div className="text-sm text-center">Guild: {guild || "None"}</div>
 //         <div className="text-sm text-center">Party: {party || "None"}</div>
 
-//         {/* ✅ Placeholder for future Settings */}
-//         <Button variant="secondary" className="w-full mt-2">
+//         <Button variant="secondary" className="w-full mt-2" onClick={onSettingsClick}>
 //           Settings
 //         </Button>
 
@@ -61,7 +63,6 @@
 // };
 
 // export default UserPopover;
-
 "use client";
 
 import React from "react";
@@ -74,8 +75,10 @@ interface UserPopoverProps {
   guild?: string;
   party?: string;
   status?: string;
+  theme?: "dark" | "light";
   onLogout: () => void;
   onSettingsClick?: () => void;
+  onEditAvatarClick?: () => void;
   isMobile?: boolean;
 }
 
@@ -84,10 +87,15 @@ const UserPopover: React.FC<UserPopoverProps> = ({
   guild,
   party,
   status,
+  theme,
   onLogout,
   onSettingsClick,
+  onEditAvatarClick, 
   isMobile = false,
 }) => {
+  const bgClass = theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-black";
+  const textSecondary = theme === "dark" ? "text-gray-300" : "text-gray-600";
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -98,17 +106,29 @@ const UserPopover: React.FC<UserPopoverProps> = ({
 
       <PopoverContent
         align={isMobile ? "center" : "end"}
-        className="p-4 w-64 flex flex-col gap-2 z-50"
+        className={`p-4 w-64 flex flex-col gap-2 z-50 ${bgClass}`}
       >
         <div className="text-center font-semibold text-lg">{userName}</div>
 
-        <div className="text-sm text-gray-600 text-center">
+        <div className={`text-sm ${textSecondary} text-center`}>
           Status: {status || "None"}
         </div>
-        <div className="text-sm text-center">Guild: {guild || "None"}</div>
-        <div className="text-sm text-center">Party: {party || "None"}</div>
+        <div className={`text-sm ${textSecondary} text-center`}>Guild: {guild || "None"}</div>
+        <div className={`text-sm ${textSecondary} text-center`}>Party: {party || "None"}</div>
 
-        <Button variant="secondary" className="w-full mt-2" onClick={onSettingsClick}>
+        <Button
+          variant="secondary"
+          className="w-full mt-2"
+          onClick={onEditAvatarClick}
+        >
+          Change Profile Pic
+        </Button>
+
+        <Button
+          variant="secondary"
+          className="w-full mt-1"
+          onClick={onSettingsClick}
+        >
           Settings
         </Button>
 
