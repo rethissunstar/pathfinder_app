@@ -1,25 +1,63 @@
-
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
+
 const sequelize = require("./shared/db/connection");
 const initializeModels = require("./src/models");
 const seedUsers = require("./src/users/User.seeds");
+const defineUserModel = require("./src/users/User.model");
 const { loadRoutes } = require("./src");
 
 const PORT = process.env.PORT || 3001;
+const SECRET = process.env.JWT_SECRET || "supersecret";
+
 const app = express();
 
+// ✅ Middleware
 app.use(cors({
-  origin: process.env.NODE_ENV === "production" ? "" : "http://localhost:3005", //Add production site from Heroku
-  credentials: true
+  origin: process.env.NODE_ENV === "production" ? "" : "http://localhost:3005",
+  credentials: true,
 }));
-
 app.use(express.json());
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to the Pathfinder API!" });
+
+// ✅ Protected route to return authenticated user info
+app.get("/", async (req, res) => {
+  try {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1]; // Bearer <token>
+    console.log("this is the token sent", token)
+    if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+    const decoded = jwt.verify(token, SECRET);
+    const { userId } = decoded;
+
+    const User = defineUserModel(sequelize);
+    const user = await User.findOne({ where: { userId } });
+
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    res.json({
+      user: {
+        userId: user.userId,
+        userName: user.userName,
+        email: user.email,
+        permission: user.permission,
+        profilePic: user.profilePic,
+        guild: user.guild,
+        party: user.party,
+        status: user.status,
+        theme: user.theme,
+        language: user.language,
+      },
+    });
+  } catch (err) {
+    console.error("Error in GET /:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
+// ✅ Startup sequence
 const runServer = async () => {
   try {
     console.log("📡 Connecting to database...");
@@ -38,55 +76,15 @@ const runServer = async () => {
 
     console.log("🚀 Starting server...");
     loadRoutes(app);
+
     app.listen(PORT, () => {
       console.log(`✅ Pathfinder API running at http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error(" Startup failed:", error);
+    console.error("❌ Startup failed:", error);
     process.exit(1);
   }
 };
 
 runServer();
 
-// require('dotenv').config();
-// const express = require('express');
-// const cors = require('cors');
-// const app = express();
-
-// const { loadRoutes } = require('./src');
-// const sequelize = require('./shared/db/connection');
-// const initializeModels = require('./src/models');
-
-// const PORT = process.env.PORT || 3001;
-
-// // ✅ CORS dynamic origin
-// const allowedOrigins = [
-//   'http://localhost:3005',                      // local dev
-//   process.env.FRONTEND_URL                     // production URL from .env
-// ];
-
-// app.use(cors({
-//   origin: (origin, callback) => {
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       return callback(null, true);
-//     }
-//     return callback(new Error('Not allowed by CORS'));
-//   },
-//   credentials: true,
-// }));
-
-// app.use(express.json());
-
-// initializeModels(sequelize);
-// loadRoutes(app);
-
-// app.get('/', (req, res) => {
-//   res.json({ message: 'Welcome to the Pathfinder API!' });
-// });
-
-// sequelize.sync().then(() => {
-//   app.listen(PORT, () => {
-//     console.log(`🚀 Pathfinder API running on http://localhost:${PORT}`);
-//   });
-// });

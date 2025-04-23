@@ -123,6 +123,10 @@ const defineUserModel = (sequelize) => {
       party: {
         type: DataTypes.STRING,
         defaultValue: "",
+      },
+      status: {
+        type: DataTypes.STRING,
+        defaultValue: "",
       }
 
     },
