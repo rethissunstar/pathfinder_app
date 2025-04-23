@@ -17,3 +17,5 @@ export type User = {
 
 // This atom will hold the current logged-in user
 export const userAtom = atom<User | null>(null);
+
+export const isMobileAtom = atom(false); 
