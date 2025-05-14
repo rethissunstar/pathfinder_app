@@ -1,9 +1,12 @@
+
+
 let friendService;
 
 const sendFriendRequest = async (req, res) => {
   try {
-    const { userId, friendId } = req.body;
-    const newRequest = await friendService.sendRequest(userId, friendId);
+    const { requestorId, friendUserId } = req.body;
+
+    const newRequest = await friendService.sendRequest(requestorId, friendUserId);
     res.status(201).json({ message: "Friend request sent", request: newRequest });
   } catch (err) {
     console.error("Send request error:", err);
@@ -13,9 +16,9 @@ const sendFriendRequest = async (req, res) => {
 
 const respondToFriendRequest = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { status } = req.body;
-    const updatedRequest = await friendService.respondToRequest(id, status);
+    const { requestorId, friendUserId, status } = req.body;
+
+    const updatedRequest = await friendService.respondToRequest(requestorId, friendUserId, status);
     res.json({ message: `Friend request ${status}`, request: updatedRequest });
   } catch (err) {
     console.error("Respond error:", err);
@@ -23,9 +26,21 @@ const respondToFriendRequest = async (req, res) => {
   }
 };
 
+const getIncomingRequests = async (req, res) => {
+  const { userId } = req.params; 
+  const requests = await friendService.getIncomingRequests(userId);
+  res.json(requests);
+};
+
+const getOutgoingRequests = async (req, res) => {
+  const { userId } = req.params;  
+  const requests = await friendService.getOutgoingRequests(userId);
+  res.json(requests);
+};
+
 const listFriends = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { userId } = req.params;  
     const friends = await friendService.getFriends(userId);
     res.json(friends);
   } catch (err) {
@@ -36,7 +51,7 @@ const listFriends = async (req, res) => {
 
 const deleteFriend = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params;  
     await friendService.deleteFriendship(id);
     res.json({ message: "Friend removed successfully" });
   } catch (err) {
@@ -52,10 +67,13 @@ const injectFriendService = (service) => {
 if (process.env.NODE_ENV !== "test") {
   const defineFriendModel = require('./friends.model');
   const createFriendService = require('./friends.service');
+  const defineUserModel = require('../users/user.model');
   const sequelize = require('../../shared/db/connection');
 
   const Friend = defineFriendModel(sequelize);
-  friendService = createFriendService(Friend);
+  const User = defineUserModel(sequelize);
+
+  friendService = createFriendService(Friend, User);
 }
 
 module.exports = {
@@ -64,4 +82,6 @@ module.exports = {
   listFriends,
   deleteFriend,
   injectFriendService,
+  getIncomingRequests,
+  getOutgoingRequests
 };

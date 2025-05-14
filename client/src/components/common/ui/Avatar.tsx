@@ -30,7 +30,9 @@ export const Avatar: React.FC<Props> = ({
   };
 
   const user = useAtomValue(userAtom);
-  const resolvedSrc = src || user?.profilePic || "https://www.gravatar.com/avatar/?d=mp";
+  // const resolvedSrc = src || user?.profilePic || "https://www.gravatar.com/avatar/?d=mp";
+  const resolvedSrc = src || "https://www.gravatar.com/avatar/?d=mp";
+
   const [imgError, setImgError] = React.useState(false);
 
   return (

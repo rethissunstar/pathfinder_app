@@ -69,6 +69,8 @@ import React from "react";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Button } from "@/components/common/ui/Button";
 import { Avatar } from "@/components/common/ui/Avatar";
+import { useAtom } from "jotai";
+import { userAtom } from "@/store/userAtom";
 
 interface UserPopoverProps {
   userName: string;
@@ -95,12 +97,17 @@ const UserPopover: React.FC<UserPopoverProps> = ({
 }) => {
   const bgClass = theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-black";
   const textSecondary = theme === "dark" ? "text-gray-300" : "text-gray-600";
+  const [user] = useAtom(userAtom);
+
+  // const profilePic = user.profilePic
 
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="ghost" className="p-0 h-auto w-auto">
-          <Avatar alt={userName} size="md" />
+        <Avatar src={user?.profilePic} alt={user?.userName || "User"} size="md" />
+
+
         </Button>
       </PopoverTrigger>
 

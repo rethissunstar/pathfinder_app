@@ -1,3 +1,23 @@
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:3001";
+
+export async function getUserByUsername(username: string) {
+  console.log("this is username", username)
+  try {
+    const res = await fetch(`${BASE_URL}/api/users/by-name/${encodeURIComponent(username)}`);
+
+    if (!res.ok) {
+      throw new Error("User not found");
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    console.error("Failed to fetch user by username:", err);
+    throw err;
+  }
+}
+
+
 
 export async function loginUser({
     userName,
@@ -6,6 +26,7 @@ export async function loginUser({
     userName: string;
     password: string;
   }) {
+    //Update this for LIVE
     const response = await fetch("http://localhost:3001/api/users/login", {
       method: "POST",
       headers: {

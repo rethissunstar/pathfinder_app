@@ -23,3 +23,16 @@ CREATE TABLE users (
   guild VARCHAR(255) DEFAULT '',
   party VARCHAR(255) DEFAULT ''
 );
+-- Friends Table
+CREATE TABLE friends (
+  friend_id INT AUTO_INCREMENT PRIMARY KEY,
+  requestor_id INT NOT NULL,  -- The user who made the request
+  friend_user_id INT NOT NULL, -- The user who received the request
+  status ENUM('pending', 'accepted', 'rejected') DEFAULT 'pending',
+  FOREIGN KEY (requestor_id) REFERENCES users(user_id),
+  FOREIGN KEY (friend_user_id) REFERENCES users(user_id)
+);
+
+
+-- update to place constraint on table
+ALTER TABLE friends ADD CONSTRAINT unique_friend_pair UNIQUE (requestor_id, friend_user_id);

@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('./User.controller');
+const { getUserByUsername } = require("./User.controller");
+
+router.get("/by-name/:username", getUserByUsername);
+
+
 
 // POST /api/users/register
 router.post('/register', userController.register);
