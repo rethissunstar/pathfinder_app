@@ -11,6 +11,19 @@ const register = async (req, res) => {
   }
 };
 
+const getUserByUsername = async (req, res) => {
+  const { username } = req.params;
+  try {
+    const user = await userService.findByUsername(username);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    res.json({ userId: user.userId });
+  } catch (err) {
+    console.error("Lookup failed:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 const login = async (req, res) => {
   try {
     const { token, user } = await userService.loginUser(req.body); 
@@ -61,7 +74,17 @@ const patchUser = async (req, res) => {
     }
   };
   
-
+  const checkUsernameAvailability = async (req, res) => {
+    const { username } = req.params;
+    try {
+      const available = await userService.isUsernameAvailable(username);
+      res.json({ available });
+    } catch (err) {
+      console.error("Username check failed:", err);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  };
+  
 
 // ✅ This allows tests to inject a mock service
 const injectUserService = (service) => {
@@ -82,5 +105,7 @@ module.exports = {
   register,
   login,
   patchUser,
-  injectUserService, // exported for test injection
+  getUserByUsername,
+  injectUserService,
+  checkUsernameAvailability,
 };

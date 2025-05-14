@@ -5,6 +5,15 @@ const { validateEmail } = require('./User.utils');
 const { generateToken } = require('../../utils/loginUtils');
 
 const createUserService = (User) => {
+  const findByUsername = async (username) => {
+    return await User.findOne({ where: { userName: username } });
+  };
+
+  const isUsernameAvailable = async (username) => {
+    const user = await User.findOne({ where: { userName: username } });
+    return !user;
+  };
+
   const registerUser = async ({ userName, password, email, permission }) => {
     const existing = await User.findOne({ where: { userName } });
     if (existing) throw new Error('Username already exists');
@@ -96,6 +105,8 @@ const createUserService = (User) => {
     registerUser,
     loginUser,
     updateUserPreferences,
+    findByUsername,
+    isUsernameAvailable,
   };
 };
 

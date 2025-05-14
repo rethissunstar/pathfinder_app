@@ -58,6 +58,34 @@ app.get("/", async (req, res) => {
 });
 
 // ✅ Startup sequence
+// const runServer = async () => {
+//   try {
+//     console.log("📡 Connecting to database...");
+//     await sequelize.authenticate();
+
+//     console.log("🔧 Initializing models...");
+//     initializeModels(sequelize);
+
+//     console.log("🧱 Syncing database...");
+//     await sequelize.sync({ alter: true });
+
+//     if (process.env.NODE_ENV !== "production") {
+//       console.log("🌱 Seeding database...");
+//       await seedUsers();
+//     }
+
+//     console.log("🚀 Starting server...");
+//     loadRoutes(app);
+
+//     app.listen(PORT, () => {
+//       console.log(`✅ Pathfinder API running at http://localhost:${PORT}`);
+//     });
+//   } catch (error) {
+//     console.error("❌ Startup failed:", error);
+//     process.exit(1);
+//   }
+// };
+
 const runServer = async () => {
   try {
     console.log("📡 Connecting to database...");
@@ -67,11 +95,21 @@ const runServer = async () => {
     initializeModels(sequelize);
 
     console.log("🧱 Syncing database...");
-    await sequelize.sync({ force: true });
+    await sequelize.sync({ alter: true });
 
     if (process.env.NODE_ENV !== "production") {
-      console.log("🌱 Seeding database...");
-      await seedUsers();
+      console.log("🌱 Checking if seeding is needed...");
+
+      // Check if users already exist
+      const User = defineUserModel(sequelize);
+      const existingUsers = await User.findAll();
+
+      if (existingUsers.length === 0) {
+        console.log("🌱 Seeding database...");
+        await seedUsers();
+      } else {
+        console.log("✅ Database already seeded, skipping seeding.");
+      }
     }
 
     console.log("🚀 Starting server...");

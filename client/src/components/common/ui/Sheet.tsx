@@ -42,7 +42,7 @@ const SettingsSheet: React.FC<SettingsSheetProps> = ({ open, onClose, isMobile =
       console.log("✅ Theme update response:", response);
     } catch (error) {
       console.error("❌ Failed to update theme:", error);
-      // Optionally revert if needed
+    
       // setUser(user);
       // document.documentElement.classList.toggle("dark", newTheme !== "dark");
     }

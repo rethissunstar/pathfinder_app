@@ -14,4 +14,8 @@ router.get('/:userId', friendController.listFriends);
 // DELETE /api/friends/:id → Remove a friend
 router.delete('/:id', friendController.deleteFriend);
 
+// POPULATE LIST of requests
+router.get("/requests/incoming/:userId", friendController.getIncomingRequests);
+router.get("/requests/outgoing/:userId", friendController.getOutgoingRequests);
+
 module.exports = router;
