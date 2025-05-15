@@ -28,7 +28,7 @@ CREATE TABLE friends (
   friend_id INT AUTO_INCREMENT PRIMARY KEY,
   requestor_id INT NOT NULL,  -- The user who made the request
   friend_user_id INT NOT NULL, -- The user who received the request
-  status ENUM('pending', 'accepted', 'rejected') DEFAULT 'pending',
+  status ENUM('pending', 'accepted', 'rejected', 'removed') DEFAULT 'pending',
   FOREIGN KEY (requestor_id) REFERENCES users(user_id),
   FOREIGN KEY (friend_user_id) REFERENCES users(user_id)
 );

@@ -12,6 +12,7 @@ import SearchBox from "@/components/common/SearchBox";
 import FriendRequestSheet from "./FriendSheet"; 
 import { Plus } from "lucide-react";
 import { Button } from "@/components/common/ui/Button";
+import { deleteFriend } from "@/lib/api/friends";
 
 // Main component for friend management
 const FriendList: React.FC = () => {
@@ -89,6 +90,21 @@ const FriendList: React.FC = () => {
     }
   };
 
+  const handleRemoveFriend = async (requestorId: number, friendUserId: number) => {
+    try {
+        console.log("the remove worked", requestorId, friendUserId)
+      await deleteFriend(requestorId, friendUserId); // Assuming deleteFriend accepts both userId and friendUserId
+      console.log(`✅ Friend between ${requestorId} and ${friendUserId} removed.`);
+      
+      // Optionally refresh the list of friends after removal
+      const updatedFriends = await getFriends(user?.userId!);  // Assuming getFriends fetches the updated list
+      setFriends(updatedFriends);
+    } catch (error) {
+      console.error("❌ Failed to remove friend:", error);
+    }
+  };
+  
+
   return (
     <div className="space-y-3 p-4 relative">
         <FriendRequestSheet
@@ -163,23 +179,57 @@ const FriendList: React.FC = () => {
         </div>
       )}
 
-      {/* Friends */}
-      {friends.length > 0 && (
+      {/* Friends
+//       {friends.length > 0 && (
+//   <div>
+//     <h3 className="text-sm font-semibold text-green-600">Friends</h3>
+//     <div className="space-y-2">
+//       {filtered.map(friend => {
+
+//         console.log("Friend object:", friend);
+
+//         return (
+//           <FriendCard
+//             key={friend.userId} 
+//             username={friend.userName || "Unknown"}  
+//             guild={friend.guild || "No Guild"}
+//             party={friend.party || "No Party"}
+//             status="Friend"
+//             profilePic={friend.profilePic}  
+//           />
+//         );
+//       })}
+//     </div>
+//   </div>
+// )} */}
+{friends.length > 0 && (
   <div>
     <h3 className="text-sm font-semibold text-green-600">Friends</h3>
     <div className="space-y-2">
       {filtered.map(friend => {
-        // Log the full friend object
         console.log("Friend object:", friend);
 
         return (
           <FriendCard
-            key={friend.userId}  // Use friend.userId as key instead of friend.friendUserId
-            username={friend.userName || "Unknown"}  // Use friend.userName here
+            key={friend.userId}
+            username={friend.userName || "Unknown"}
             guild={friend.guild || "No Guild"}
             party={friend.party || "No Party"}
             status="Friend"
-            profilePic={friend.profilePic}  
+            profilePic={friend.profilePic}
+            friendUserId={friend.friendUserId} 
+            requestorId={friend.requestorId}   
+            onRemove={() => {
+                console.log("this is the friend data on the onRemove", friend)
+                console.log("this is the user", user)
+                if (user && friend.userId) {
+                  handleRemoveFriend(user.userId, friend.userId);
+                } else {
+                  console.error("Missing user or friendUserId");
+                }
+              }}
+              
+              
           />
         );
       })}

@@ -50,15 +50,16 @@ const listFriends = async (req, res) => {
 };
 
 const deleteFriend = async (req, res) => {
-  try {
-    const { id } = req.params;  
-    await friendService.deleteFriendship(id);
-    res.json({ message: "Friend removed successfully" });
-  } catch (err) {
-    console.error("Delete friend error:", err);
-    res.status(500).json({ error: err.message });
-  }
-};
+    const { requestorId, friendUserId } = req.params;  
+  
+    try {
+      const result = await friendService.deleteFriendship(requestorId, friendUserId); 
+      res.status(200).json(result);  // Send success response
+    } catch (err) {
+      console.error("Delete friend error:", err);
+      res.status(500).json({ error: err.message });  // Send error response
+    }
+  };
 
 const injectFriendService = (service) => {
   friendService = service;

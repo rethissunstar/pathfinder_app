@@ -16,8 +16,11 @@ interface FriendCardProps {
     party?: string;
     status?: string;
     profilePic?: string;
+    friendUserId?: number;  
+    requestorId?: number;  
     onAccept?: () => void;
-    onReject?: () => void;   
+    onReject?: () => void;
+    onRemove?: () => void; 
     isIncomingRequest?: boolean;
   }
   
@@ -30,6 +33,7 @@ const FriendCard: React.FC<FriendCardProps> = ({
     profilePic,
     onAccept,
     onReject,
+    onRemove,
     isIncomingRequest, 
   }) => {
   
@@ -58,7 +62,7 @@ const FriendCard: React.FC<FriendCardProps> = ({
   <Popover>
     <PopoverTrigger asChild>
       <Button variant="ghost" className="w-8 h-8 p-0">
-        <MoreVertical />
+        <MoreVertical className="dark:text-white" />
       </Button>
     </PopoverTrigger>
     <PopoverContent align="end" className="w-20 space-y-2">
@@ -82,7 +86,7 @@ const FriendCard: React.FC<FriendCardProps> = ({
     <Button variant="secondary" className="w-full text-sm">Invite to Party</Button>
 )}
       
-      <Button variant="danger" className="w-full text-sm">Remove</Button>
+      <Button variant="danger" className="w-full text-sm" onClick={onRemove}>Remove</Button>
     </PopoverContent>
   </Popover>
 </div>

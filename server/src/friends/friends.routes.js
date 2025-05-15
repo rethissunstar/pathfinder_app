@@ -12,7 +12,7 @@ router.patch('/:id', friendController.respondToFriendRequest);
 router.get('/:userId', friendController.listFriends);
 
 // DELETE /api/friends/:id → Remove a friend
-router.delete('/:id', friendController.deleteFriend);
+router.delete("/:requestorId/:friendUserId", friendController.deleteFriend);
 
 // POPULATE LIST of requests
 router.get("/requests/incoming/:userId", friendController.getIncomingRequests);
