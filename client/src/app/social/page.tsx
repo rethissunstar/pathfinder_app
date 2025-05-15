@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
 const MobileSocialScreen = dynamic(() => import("@/social/mobile/MobileSocialLayout"));
-// const DesktopSocialScreen = dynamic(() => import("@/features/social/components/DesktopSocialScreen"));
+const DesktopSocialScreen = dynamic(() => import("@/social/desktop/DesktopSocialScreen"));
 
 export default function SocialPage() {
   const [isMobile, setIsMobile] = useState(false);
@@ -19,6 +19,6 @@ export default function SocialPage() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-//   return isMobile ? <MobileSocialScreen /> : <DesktopSocialScreen />;
-return isMobile ? <MobileSocialScreen /> : <div>test</div>;
+  return isMobile ? <MobileSocialScreen /> : <DesktopSocialScreen />;
+
 }

@@ -98,12 +98,37 @@ const getFriends = async (userId) => {
   
   
   // Delete a friendship (by id)
-  const deleteFriendship = async (id) => {
-    const request = await Friend.findByPk(id);
-    if (!request) throw new Error("Friendship not found");
-    await request.destroy(); 
+  const deleteFriendship = async (userId, friendId) => {
+    try {
+      // Find the friendship where the user is either the requestor or the friend
+      const request = await Friend.findOne({
+        where: {
+          [Op.or]: [
+            { requestorId: userId, friendUserId: friendId },  // Case where user is the requestor
+            { requestorId: friendId, friendUserId: userId },  // Case where user is the friend
+          ],
+          status: "accepted",  // Ensure it's an accepted friendship
+        },
+      });
+  
+      if (!request) {
+        throw new Error("Friendship not found or already removed.");
+      }
+  
+      // Mark the friendship as removed
+      request.status = "removed";  // Update status to "removed"
+      await request.save();
+  
+      console.log(`Friendship between user ${userId} and ${friendId} has been removed.`);
+  
+      // Return success status to the frontend
+      return { message: "Friendship successfully removed", status: "removed" };
+    } catch (error) {
+      console.error("Error removing friendship:", error);
+      return { error: error.message, status: "failed" };  // Return error status on failure
+    }
   };
-
+  
   // Get incoming friend requests for a user
   const getIncomingRequests = async (userId) => {
     return Friend.findAll({

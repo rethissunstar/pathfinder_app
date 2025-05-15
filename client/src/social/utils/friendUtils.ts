@@ -1,35 +1,4 @@
-// import { respondToFriendRequest } from "@/lib/api/friends";
 
-// /**
-//  * Accepts a pending friend request.
-//  * @param userId - The user who originally sent the friend request.
-//  * @param friendId - The recipient of the friend request (current user).
-//  */
-// export const acceptFriendRequest = async (userId: number, friendId: number) => {
-//     try {
-//       const res = await respondToFriendRequest(userId, friendId, true);
-//       console.log("✅ Friend request accepted:", res);
-//       return res;
-//     } catch (err) {
-//       console.error("❌ Failed to accept request:", err);
-//       throw err;
-//     }
-//   };
-  
-// /**
-//  * Rejects a pending friend request.
-//  */
-// export const rejectFriendRequest = async (userId: number, friendId: number) => {
-//   try {
-//     const id = `${userId}-${friendId}`;
-//     const res = await respondToFriendRequest(userId, friendId, false);
-//     console.log("❌ Friend request rejected:", res);
-//     return res;
-//   } catch (err) {
-//     console.error("❌ Failed to reject request:", err);
-//     throw err;
-//   }
-// };
 
 import { sendFriendRequest, respondToFriendRequest } from "@/lib/api/friends";
 import { getUserByUsername } from "@/lib/api/user";
