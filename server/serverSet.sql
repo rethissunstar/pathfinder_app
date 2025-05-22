@@ -36,3 +36,22 @@ CREATE TABLE friends (
 
 -- update to place constraint on table
 ALTER TABLE friends ADD CONSTRAINT unique_friend_pair UNIQUE (requestor_id, friend_user_id);
+
+-- Messages Table
+CREATE TABLE messages (
+  message_id INT AUTO_INCREMENT PRIMARY KEY,
+  sender_id INT NOT NULL,  -- The user who sent the message
+  receiver_id INT NOT NULL,  -- The user who received the message
+  content TEXT NOT NULL,  -- The message content
+  date_sent DATETIME DEFAULT CURRENT_TIMESTAMP,  -- Timestamp when message was sent
+  status ENUM('unread', 'read', 'archived') DEFAULT 'unread',  -- Status of the message
+  conversation_id INT DEFAULT NULL,  -- Thread ID (for grouping messages)
+  parent_message_id INT DEFAULT NULL,  -- Message ID that this one is replying to (if any)
+  FOREIGN KEY (sender_id) REFERENCES users(user_id),
+  FOREIGN KEY (receiver_id) REFERENCES users(user_id),
+  FOREIGN KEY (conversation_id) REFERENCES messages(message_id),  -- Referencing the same table for the conversation
+  FOREIGN KEY (parent_message_id) REFERENCES messages(message_id)  -- Referencing the original message in the thread
+);
+
+-- Index to help search messages efficiently by sender and receiver, and by conversation
+CREATE INDEX idx_sender_receiver_conversation ON messages (sender_id, receiver_id, conversation_id);
