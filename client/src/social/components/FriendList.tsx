@@ -93,11 +93,11 @@ const FriendList: React.FC = () => {
   const handleRemoveFriend = async (requestorId: number, friendUserId: number) => {
     try {
         console.log("the remove worked", requestorId, friendUserId)
-      await deleteFriend(requestorId, friendUserId); // Assuming deleteFriend accepts both userId and friendUserId
+      await deleteFriend(requestorId, friendUserId); 
       console.log(`✅ Friend between ${requestorId} and ${friendUserId} removed.`);
       
       // Optionally refresh the list of friends after removal
-      const updatedFriends = await getFriends(user?.userId!);  // Assuming getFriends fetches the updated list
+      const updatedFriends = await getFriends(user?.userId!);  
       setFriends(updatedFriends);
     } catch (error) {
       console.error("❌ Failed to remove friend:", error);
@@ -179,29 +179,7 @@ const FriendList: React.FC = () => {
         </div>
       )}
 
-      {/* Friends
-//       {friends.length > 0 && (
-//   <div>
-//     <h3 className="text-sm font-semibold text-green-600">Friends</h3>
-//     <div className="space-y-2">
-//       {filtered.map(friend => {
-
-//         console.log("Friend object:", friend);
-
-//         return (
-//           <FriendCard
-//             key={friend.userId} 
-//             username={friend.userName || "Unknown"}  
-//             guild={friend.guild || "No Guild"}
-//             party={friend.party || "No Party"}
-//             status="Friend"
-//             profilePic={friend.profilePic}  
-//           />
-//         );
-//       })}
-//     </div>
-//   </div>
-// )} */}
+      {/* Friends */}
 {friends.length > 0 && (
   <div>
     <h3 className="text-sm font-semibold text-green-600">Friends</h3>

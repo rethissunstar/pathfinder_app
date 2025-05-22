@@ -31,7 +31,7 @@ module.exports = (sequelize) => {
     sequelize,
     modelName: 'Friend',
     tableName: 'friends',
-    underscored: true,  // This ensures that Sequelize automatically maps fields like `requestorId` to `requestor_id`
+    underscored: true, 
     timestamps: false,
     freezeTableName: true,
     indexes: [
