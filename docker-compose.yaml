@@ -30,7 +30,7 @@ services:
 
   pf_server:
     image: pf/server
-    build: ./server/
+    build: Dockerfile.server
     
     environment:
       DB_HOST: pathfinder_mysql
@@ -39,19 +39,20 @@ services:
       DB_NAME: pathfinder_db
       DB_PORT: 3306
     depends_on:
-      - liquibase
-      - pathfinder_mysql
+      liquibase:
+          condition: service_completed_successfully
+      
     ports:
       - "3001:3001"
 
-  pf_client:
+  # pf_client:
     
-    build: ./client/
-    environment:
-      SOME_ENV: SOME_VALUE
-    depends_on:
-      - liquibase
-      - pathfinder_mysql
-      - pf_server
-    ports:
-      - "3005:3005"
+  #   build: Dockerfile.server
+  #   environment:
+  #     SOME_ENV: SOME_VALUE
+  #   depends_on:
+  #     - liquibase
+  #     - pathfinder_mysql
+  #     - pf_server
+  #   ports:
+  #     - "3005:3005"
