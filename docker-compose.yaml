@@ -26,10 +26,11 @@ services:
      - ./server:/liquibase/changelog
     environment:
       INSTALL_MYSQL: true
-    command: ["update", "--changelog-file=changelog/liquibaseChangeLog.sql", "--url=jdbc:mysql://pathfinder_mysql:3306/pathfinder_db?user=root&password=temporary_root"]
+      LIQUIBASE_DBCLHISTORY_SEVERITY: "0"
+    command: [ "update", "--changelog-file=changelog/liquibaseChangeLog.sql", "--url=jdbc:mysql://pathfinder_mysql:3306/pathfinder_db?user=root&password=temporary_root" ]
 
   pf_server:
-    image: pf/server
+    # image: pf/server
     build: Dockerfile.server
     
     environment:
@@ -38,21 +39,21 @@ services:
       DB_PASSWORD: temporary_pw
       DB_NAME: pathfinder_db
       DB_PORT: 3306
-    depends_on:
-      liquibase:
-          condition: service_completed_successfully
+    # depends_on:
+      # liquibase:
+        # condition: service_completed_successfully
+         
       
     ports:
       - "3001:3001"
 
-  # pf_client:
+  pf_client:
     
-  #   build: Dockerfile.server
-  #   environment:
-  #     SOME_ENV: SOME_VALUE
-  #   depends_on:
-  #     - liquibase
-  #     - pathfinder_mysql
-  #     - pf_server
-  #   ports:
-  #     - "3005:3005"
+    build: Dockerfile.client
+    # environment:
+      # SOME_ENV: SOME_VALUE
+    # depends_on:
+      # liquibase:
+          # condition: service_completed_successfully
+    ports:
+      - "3005:3005"
