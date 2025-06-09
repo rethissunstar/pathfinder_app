@@ -50,3 +50,5 @@ ALTER TABLE friends ADD CONSTRAINT unique_friend_pair UNIQUE (requestor_id, frie
 --changeset messages.index:1 dbms:mysql splitStatements:false
 CREATE INDEX idx_sender_receiver_conversation ON messages (sender_id, receiver_id, conversation_id);
 
+--changeset users.seed:1 dbms:mysql splitStatements:false
+INSERT INTO users ... 
